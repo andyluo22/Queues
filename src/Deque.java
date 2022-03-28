@@ -1,6 +1,20 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/*
+    Either use a resizing array for a deque or a Linkedlist data structure to insert, remove, or iterate.
+    Since we are unable to use a linkedlist or arraylist, probably best to use resizing array.
+
+    LinkedList Implementation
+    - Every operation takes constant time in worst case
+    - However, uses extra time and space to deal with the links
+
+    Resizing-array Implementation
+    - Every operation takes constant amortized time
+    - Less wasted space
+
+    Amortized Analysis:  Average running time per operation over a worst-case sequence of operations
+ */
 public class Deque<Item> implements Iterable<Item> {
 
     // construct an empty deque
