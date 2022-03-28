@@ -13,8 +13,30 @@ import java.util.NoSuchElementException;
     - Every operation takes constant amortized time
     - Less wasted space
 
-    Amortized Analysis:  Average running time per operation over a worst-case sequence of operations
+    Amortized Analysis
+    - Average running time per operation over a worst-case sequence of operations
+
+    Java Generics:
+    - Avoid casting in client
+    - Discover type mismatch errors at compile-time instead of run-time
+    - Type:  Declare Item "name" = new Item
+    - Item can take the form of data structures such as Item[] array = (Item[]) new Object[size]
+    - Is not cast normally like Item[] array = new Item [].  Follow the line above to know how to cast
+    Generic Data Types:  Autoboxing
+    - Wrapper type:  Each primitive type has a wrapper object type (Ex. Integer is the wrapper for int)
+    - Autoboxing: automatically casts between a primitive type and its wrapper
+
+    Iteration:
+    - Design Challenge:  We can use iteration over the stack of generic items without revealing the internal representation (data structure) of the stack
+    - Solution: Make the stack implement the java.lang.Iterable interface
+    Iterators:
+    - Iterable interface has a method that returns an Iterator object which is why in the Deque code, when we implement the interace Iterable<Item> we have to also return the iterator object
+    - An Iterator object has methods hasNext() and next()
+    - The reason we make Iterable data structures is that client code can be elegant (for each statement can be used instead of using hasNext() and creating iterator)
+
+    Summary:  Client code can use generic stack for any type of data
  */
+
 public class Deque<Item> implements Iterable<Item> {
 
     // construct an empty deque
