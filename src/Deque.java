@@ -37,6 +37,8 @@ import java.util.function.Consumer;
     Summary:  Client code can use generic stack for any type of data
     - We probably want to use a Linked_List Implementation since we need to add at the front and back of the structure
     - Would be tricky if we used a resizing array since we can't add to the front of the array
+    - We'd want to use a doubly linked list with sentinel nodes (Nodes that do not hold any data and is used to represent the start/end of a linked list)
+    - For sentinel nodes, even for empty data structures, we still have two sentinel nodes
 
     Sources:
     GeeksforGeeks RemoveEndofNode Method
@@ -120,18 +122,23 @@ public class Deque<Item> implements Iterable<Item> {
                 return null;
             } else if (first.next.item == null) {
                 Item item = first.item;
-                first = null;
-                last = null;
+                first = first.next;
+                if (isEmpty()) {
+                    last = first;
+                }
                 N--;
                 return item;
-            } else {
-                for (Node x = first; x.next != null; x = first.next) {
-                    last.item = x.item;
+            }
+            else {
+                Item lastItemToReturn = null;
+                for(Node x = first; x.item != null; x = first.next) {
+                    if(x.next.item == null) {
+
+                    }
                 }
-                Item item = last.item;
                 last.next = null;
-                N--;
-                return item ;
+
+                return lastItemToReturn;
             }
         } catch (NullPointerException ne) {
             System.out.println("Cannot remove an empty list");
@@ -212,7 +219,6 @@ public class Deque<Item> implements Iterable<Item> {
         System.out.println("Remove two elements using removeLast");
         deque.removeLast();
         deque.removeLast();
-
 
 
         System.out.println("Add first and addLast");
