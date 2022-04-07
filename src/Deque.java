@@ -39,6 +39,7 @@ import java.util.function.Consumer;
     - Would be tricky if we used a resizing array since we can't add to the front of the array
     - We'd want to use a doubly linked list with sentinel nodes (Nodes that do not hold any data and is used to represent the start/end of a linked list)
     - For sentinel nodes, even for empty data structures, we still have two sentinel nodes
+    - Drawback with sentinel nodes is that they can take up a lot of space
 
     Sources:
     GeeksforGeeks RemoveEndofNode Method
@@ -47,103 +48,72 @@ import java.util.function.Consumer;
 
 public class Deque<Item> implements Iterable<Item> {
     //Instance Variables (make them private so client doesn't have idea on internal structure)
-    private Node first;
-    private Node last; // keep track of both first and last nodes
-    private int N;  // keeps track of the number of items since lists don't have a length method like arrays
-
-    private class Node { //Nested class to define nodes
-        Item item;
-        Node next;
-    }
+    private int size;
+    protected DLLNode header;
+    protected DLLNode trailer;
 
     // construct an empty deque
     public Deque() {
-        this.first = null;
-        this.last = null;
-        this.N = 0;
+        header = new DLLNode(null,null,null);
+        trailer = new DLLNode(null,header,null);
+        header.setNext(trailer);
     }
 
     // is the deque empty?
     public boolean isEmpty() {
-        return first == null;
+        return size == 0;
     }
 
     // return the number of items on the deque
     public int size() {
-        return N;
+        return size;
     }
 
     // add the item to the front
     public void addFirst(Item item) {
-        Node oldFirst = first;
-        first = new Node();
-        first.item = item;
-        first.next = oldFirst;
-        N++;
+        addBetween(item,header,header.getNext());
     }
 
     // add the item to the back
     public void addLast(Item item) {
-        Node oldLast = last;
-        last = new Node();
-        last.item = item;
-        last.next = null;
-
-        if (isEmpty()) {
-            first = last;
-        } else {
-            oldLast.next = last;
-        }
-        N++;
+        addBetween(item,trailer,trailer.getNext());
     }
 
     // remove and return the item from the front
     public Item removeFirst() {
-        try {
-            Item item = first.item;
-            first = first.next;
-            if (isEmpty()) {
-                last = null;
-            }
-            N--;
-            return item;
-        } catch (NullPointerException ne) {
-            System.out.println("Cannot remove an empty list");
+        if(isEmpty()) {
             return null;
         }
 
+        return remove(header.getNext());
     }
 
     //should've used double linked list but whatever because we need to traverse the whole array to look for the end;
     // remove and return the item from the back
     public Item removeLast() {
-        try {
-            if (first.item == null) {
-                return null;
-            } else if (first.next.item == null) {
-                Item item = first.item;
-                first = first.next;
-                if (isEmpty()) {
-                    last = first;
-                }
-                N--;
-                return item;
-            }
-            else {
-                Item lastItemToReturn = null;
-                for(Node x = first; x.item != null; x = first.next) {
-                    if(x.next.item == null) {
-
-                    }
-                }
-                last.next = null;
-
-                return lastItemToReturn;
-            }
-        } catch (NullPointerException ne) {
-            System.out.println("Cannot remove an empty list");
+        if(isEmpty()) {
             return null;
         }
+
+        return remove(trailer.getPrev());
+    }
+
+    private void addBetween(Item item, DLLNode predecessor, DLLNode successor) {
+        DLLNode newNode = new DLLNode(item,predecessor,successor);
+        predecessor.setNext(newNode);
+        successor.setPrev(newNode);
+        size++;
+    }
+
+    private Item remove(DLLNode node) {
+        DLLNode predecessor = node.getPrev();
+        DLLNode successor = node.getNext();
+
+        predecessor.setNext(successor);
+        successor.setPrev(predecessor);
+        size--;
+
+        return (Item) node.getItem();
     }
 
     // return an iterator over items in order from front to back
@@ -153,17 +123,17 @@ public class Deque<Item> implements Iterable<Item> {
 
     //must create the ListIterator class that implements Iterator for the method above
     private class ListIterator implements Iterator<Item> {
-        private Deque<Item>.Node current = first;
+        private DLLNode current = header.getNext();
 
         @Override
         public boolean hasNext() {
-            return current != null;
+            return current != trailer;
         }
 
         @Override
         public Item next() {
-            Item item = current.item;
-            current = current.next;
+            Item item = (Item) current.getItem();
+            current = current.getNext();
             return item;
         }
 
@@ -185,50 +155,14 @@ public class Deque<Item> implements Iterable<Item> {
 
         //Test removeFirst of 2 Items and addFirst of 2 Items
         System.out.println("Add two elements using addFirst : ");
-        deque.addFirst("String");
-        deque.addFirst(2);
+        deque.addFirst("2");
+        deque.addFirst("Andy");
 
-        for (Object element : deque) {
-            System.out.println(element);
+        for(Object s: deque) {
+            System.out.println(s);
         }
-        System.out.println("Size:" + deque.size());
 
-        System.out.println("Remove two elements using removeFirst: ");
-        deque.removeFirst();
-        deque.removeFirst();
-        deque.removeFirst();
-
-        for (Object element : deque) {
-            System.out.println(element);
-        }
-        System.out.println("Size:" + deque.size());
-
-
-        //Test removeLast
-        System.out.println("Add two elements using addLast");
-        deque = new Deque<>();
-        deque.addLast(3);
-        deque.addLast("Andy");
-
-        for (Object element : deque) {
-            System.out.println(element);
-        }
-        System.out.println("Size:" + deque.size());
-
-
-        System.out.println("Remove two elements using removeLast");
-        deque.removeLast();
-        deque.removeLast();
-
-
-        System.out.println("Add first and addLast");
-        deque.addFirst(3);
-        deque.addLast(4);
-
-        for (Object element : deque) {
-            System.out.println(element);
-        }
-        System.out.println("Size:" + deque.size());
+        System.out.println(deque.header.getNext().getItem()); // not using iterator
 
 
     }
