@@ -44,19 +44,20 @@ import java.util.function.Consumer;
     Sources:
     GeeksforGeeks RemoveEndofNode Method
     Algorithms4th Edition Robert Sedgeweick
+    Coding a Doubly Linked List in Java | w/Sentinel Nodes - Youtube, Tyler Programming
  */
 
 public class Deque<Item> implements Iterable<Item> {
     //Instance Variables (make them private so client doesn't have idea on internal structure)
     private int size;
-    protected DLLNode header;
-    protected DLLNode trailer;
+    private DLLNode header;
+    private DLLNode trailer;
 
     // construct an empty deque
     public Deque() {
-        header = new DLLNode(null,null,null);
-        trailer = new DLLNode(null,header,null);
-        header.setNext(trailer);
+        trailer = new DLLNode(null, null, null);
+        header = new DLLNode(null, null, trailer);
+        trailer.setPrev(header);
     }
 
     // is the deque empty?
@@ -71,35 +72,43 @@ public class Deque<Item> implements Iterable<Item> {
 
     // add the item to the front
     public void addFirst(Item item) {
-        addBetween(item,header,header.getNext());
+        if (item == null) {
+            throw new IllegalArgumentException("Cannot add a null argument");
+        } else {
+            addBetween(item, header, header.getNext());
+        }
     }
 
     // add the item to the back
     public void addLast(Item item) {
-        addBetween(item,trailer,trailer.getNext());
+        if (item == null) {
+            throw new IllegalArgumentException("Cannot add a null argument");
+        } else {
+            addBetween(item, trailer.getPrev(), trailer);
+        }
     }
 
     // remove and return the item from the front
     public Item removeFirst() {
-        if(isEmpty()) {
-            return null;
+        if (isEmpty()) {
+            throw new java.util.NoSuchElementException("Cannot remove the first element of an empty list");
+        } else {
+            return remove(header.getNext());
         }
-
-        return remove(header.getNext());
     }
 
     //should've used double linked list but whatever because we need to traverse the whole array to look for the end;
     // remove and return the item from the back
     public Item removeLast() {
-        if(isEmpty()) {
-            return null;
+        if (isEmpty()) {
+            throw new java.util.NoSuchElementException("Cannot remove the last element of an empty list");
+        } else {
+            return remove(trailer.getPrev());
         }
-
-        return remove(trailer.getPrev());
     }
 
     private void addBetween(Item item, DLLNode predecessor, DLLNode successor) {
-        DLLNode newNode = new DLLNode(item,predecessor,successor);
+        DLLNode newNode = new DLLNode(item, predecessor, successor);
         predecessor.setNext(newNode);
         successor.setPrev(newNode);
         size++;
@@ -132,9 +141,14 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public Item next() {
-            Item item = (Item) current.getItem();
-            current = current.getNext();
-            return item;
+            try {
+                Item item = (Item) current.getItem();
+                current = current.getNext();
+                return item;
+            } catch(java.util.NoSuchElementException ne) {
+                throw new java.util.NoSuchElementException("There are no more items to return");
+            }
+
         }
 
         @Override
@@ -158,12 +172,32 @@ public class Deque<Item> implements Iterable<Item> {
         deque.addFirst("2");
         deque.addFirst("Andy");
 
-        for(Object s: deque) {
+        for (Object s : deque) {
             System.out.println(s);
         }
 
-        System.out.println(deque.header.getNext().getItem()); // not using iterator
+        deque.removeLast();
 
+        for (Object s : deque) {
+            System.out.println(s);
+        }
+
+        deque.removeLast();
+
+        for (Object s : deque) {
+            System.out.println(s);
+        }
+
+        deque.addFirst("loves");
+        deque.addFirst("Andy");
+        deque.addLast("crocodiles");
+
+        for (Object s : deque) {
+            System.out.println(s);
+        }
+
+
+        // System.out.println(deque.header.getNext().getItem()); // not using iterator
 
     }
 

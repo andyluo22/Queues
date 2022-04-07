@@ -1,15 +1,21 @@
 import java.util.Iterator;
 
+//Probably want to use resizing array and then shuffle every cycle and remove the first or last part of the array
 public class RandomizedQueue<Item> implements Iterable<Item> {
+    private int size;
+    private DLLNode header;
+    private DLLNode trailer;
 
     // construct an empty randomized queue
     public RandomizedQueue() {
-
+        trailer = new DLLNode(null, null, null);
+        header = new DLLNode(null, null, trailer);
+        trailer.setPrev(header);
     }
 
     // is the randomized queue empty?
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     // return the number of items on the randomized queue
