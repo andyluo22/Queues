@@ -45,7 +45,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (size > 0) {
             Item[] shuffleArr = (Item[]) new Object[size];
             for (int i = 0; i < size; i++) {
-                shuffleArr[0] = a[0];
+                shuffleArr[i] = a[i];
             }
             StdRandom.shuffle(shuffleArr);
             Item item = shuffleArr[0];
@@ -63,7 +63,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (size > 0) {
             Item[] shuffleArr = (Item[]) new Object[size];
             for (int i = 0; i < size; i++) {
-                shuffleArr[0] = a[0];
+                shuffleArr[i] = a[i];
             }
             StdRandom.shuffle(shuffleArr);
             Item item = shuffleArr[0];
@@ -95,7 +95,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     private class RandomizedQueueIterator implements Iterator<Item> {
         private int queueSize = a.length;
         int count = size;
-        private Item[] array = Arrays.copyOf(a, a.length);
+        private Item[] array;
 
         @Override
         public boolean hasNext() {
@@ -105,6 +105,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         @Override
         public Item next() {
             if (count == size) {
+                array = (Item[]) new Object[size];
+                for (int i = 0; i < size; i++) {
+                    array[i] = a[i];
+                }
+                StdRandom.shuffle(array);
+                Item item = array[0];
                 StdRandom.shuffle(array);
             }
             count--;
@@ -123,6 +129,30 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         System.out.println(queue.size);
         queue.dequeue();
         System.out.println(queue.size);
+        queue.dequeue();
+        System.out.println(queue.size);
+        queue.enqueue("Nathan");
+        System.out.println(queue.sample());
+        queue.enqueue("Phillip");
+        queue.enqueue("Cindy");
+        System.out.println(queue.size);
+        System.out.println(queue.sample());
+        System.out.println(queue.dequeue());
+        System.out.println(queue.size);
+        System.out.println(queue.dequeue());
+        System.out.println(queue.size);
+        System.out.println(queue.dequeue());
+        System.out.println(queue.size);
+
+        queue.enqueue("Andy");
+        queue.enqueue("Nathan");
+        queue.enqueue("Cindy");
+        queue.enqueue("Tracy");
+        queue.enqueue("Phillip");
+
+        for(Object s: queue) {
+            System.out.println(s);
+        }
 
     }
 
