@@ -1,6 +1,7 @@
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -115,6 +116,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             }
             count--;
             return array[count];
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Remove is not a supported operation");
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super Item> action) {
+            Iterator.super.forEachRemaining(action);
         }
     }
 
